@@ -519,7 +519,7 @@
 <body>
     <div class="container">
         <h1>我的基金数据</h1>
-        <div class="timestamp">生成时间: 2025-08-31 00:24:12</div>
+        <div class="timestamp">生成时间: 2025-08-31 00:35:34</div>
         
         <!-- 弹框 -->
         <div id="fundModal" class="modal">
@@ -3151,12 +3151,12 @@
                 infoBlock.innerHTML = infoHtml;
                 infoBlock.style.display = 'block';
                 
-                // 定位信息块（在图表上方居中，避免遮挡曲线）
+                // 定位信息块（在整个走势图的上方，日期选择按钮的下方）
                 var blockWidth = infoBlock.offsetWidth;
                 var blockHeight = infoBlock.offsetHeight;
                 var leftPos = Math.max(10, Math.min(rect.width - blockWidth - 10, cx - blockWidth/2));
-                // 将信息块放在图表上方，确保不遮挡曲线
-                var topPos = Math.max(10, rect.top + 10);
+                // 将信息块放在日期选择按钮下方，图表区域上方
+                var topPos = rect.top + 80; // 日期选择按钮下方约80px
                 
                 infoBlock.style.left = leftPos + 'px';
                 infoBlock.style.top = topPos + 'px';
