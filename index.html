@@ -379,7 +379,7 @@
         .chart-container {
             position: relative;
             height: 500px;
-            margin: 16px 0 8px;
+            margin: 32px 0 8px;
             width: 100%;
             background-color: #f8f9fa;
             border-radius: 8px;
@@ -474,7 +474,8 @@
             padding: 12px 16px;
             border-radius: 8px;
             font-size: 14px;
-            z-index: 1000;
+            pointer-events: none;
+            z-index: 10000;
             border: 1px solid rgba(255,255,255,0.2);
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             min-width: 200px;
@@ -513,12 +514,57 @@
             color: #ff6b6b;
             font-size: 14px;
         }
+        
+        /* 新的信息显示区域样式 */
+        .chart-info-display {
+            background: rgba(0,0,0,0.9);
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 16px 0;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .chart-info-display .info-row {
+            margin: 4px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chart-info-display .info-label {
+            color: #ccc;
+            font-size: 14px;
+        }
+        .chart-info-display .info-value {
+            color: #fff;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .chart-info-display .nav-value {
+            color: #007bff;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .chart-info-display .change-value {
+            font-size: 14px;
+        }
+        .chart-info-display .change-value.positive {
+            color: #dc3545;  /* 红涨 */
+        }
+        .chart-info-display .change-value.negative {
+            color: #28a745;  /* 绿跌 */
+        }
+        .chart-info-display .cost-value {
+            color: #ff6b6b;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>我的基金数据</h1>
-        <div class="timestamp">生成时间: 2025-08-31 13:14:18</div>
+        <div class="timestamp">生成时间: 2025-08-31 13:29:01</div>
         
         <!-- 弹框 -->
         <div id="fundModal" class="modal">
@@ -538,6 +584,25 @@
                     <div class="legend">
                         <span class="legend-item"><span class="legend-line price"></span>净价</span>
                         <span class="legend-item"><span class="legend-line cost"></span>成本单价</span>
+                    </div>
+                </div>
+                <!-- 信息显示区域：日期选择按钮下方，图表区域上方 -->
+                <div id="chartInfoDisplay" class="chart-info-display">
+                    <div class="info-row">
+                        <span class="info-label">交易日期:</span>
+                        <span class="info-value" id="infoDate">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">单位净值:</span>
+                        <span class="nav-value" id="infoNav">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">涨跌幅:</span>
+                        <span class="change-value" id="infoChange">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">持仓成本:</span>
+                        <span class="cost-value" id="infoCost">-</span>
                     </div>
                 </div>
                 <div class="chart-container">
@@ -2852,58 +2917,9 @@
             // 清空容器
             chartContainer.innerHTML = '';
             
-            // 创建固定信息显示块容器（在图表外部，日期选择按钮下方）
-            var infoBlock = document.createElement('div');
-            infoBlock.className = 'chart-info-block';
-            infoBlock.style.display = 'block';
-            infoBlock.style.position = 'absolute';
-            infoBlock.style.left = '20px';
-            infoBlock.style.top = '120px'; // 日期选择按钮下方约120px
-            infoBlock.style.zIndex = '1000';
-            chartContainer.appendChild(infoBlock);
-            
-            // 初始化信息块内容（显示最新数据）
-            var latestData = data[data.length - 1];
-            var latestNav = latestData.nav;
-            var latestDate = latestData.date;
-            
-                                // 计算最新涨跌幅
-                    var latestChangePercent = '';
-                    var latestChangeClass = '';
-                    if (data.length > 1) {
-                        var prevNav = data[data.length - 2].nav;
-                        var change = ((latestNav - prevNav) / prevNav * 100);
-                        latestChangePercent = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
-                        latestChangeClass = change >= 0 ? 'positive' : 'negative';
-                    }
-            
-            // 设置初始信息块内容
-            var initialInfoHtml = '';
-            initialInfoHtml += '<div class="info-row">';
-            initialInfoHtml += '<span class="info-label">最新日期:</span>';
-            initialInfoHtml += '<span class="info-value">' + latestDate + '</span>';
-            initialInfoHtml += '</div>';
-            
-            initialInfoHtml += '<div class="info-row">';
-            initialInfoHtml += '<span class="info-label">最新净值:</span>';
-            initialInfoHtml += '<span class="nav-value">' + latestNav.toFixed(4) + '</span>';
-            initialInfoHtml += '</div>';
-            
-                                if (latestChangePercent) {
-                        initialInfoHtml += '<div class="info-row">';
-                        initialInfoHtml += '<span class="info-label">涨跌幅:</span>';
-                        initialInfoHtml += '<span class="change-value ' + latestChangeClass + '">' + latestChangePercent + '</span>';
-                        initialInfoHtml += '</div>';
-                    }
-            
-                                if (costPrice && costPrice !== 'N/A') {
-                        initialInfoHtml += '<div class="info-row">';
-                        initialInfoHtml += '<span class="info-label">持仓成本:</span>';
-                        initialInfoHtml += '<span class="cost-value">' + parseFloat(costPrice).toFixed(4) + '</span>';
-                        initialInfoHtml += '</div>';
-                    }
-            
-            infoBlock.innerHTML = initialInfoHtml;
+            // 创建动态坐标轴标签容器
+            var xAxisLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            var yAxisLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
             
             // X轴标签稀疏显示：优先显示每月1日；若无，则显示每月15日；否则按间隔抽样
             var labels = [];
@@ -3033,7 +3049,29 @@
             path.setAttribute('stroke-linejoin', 'round');
             svg.appendChild(path);
             
-
+            // 悬浮垂直虚线
+            var hoverVerticalLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            hoverVerticalLine.setAttribute('x1', paddingLeft);
+            hoverVerticalLine.setAttribute('y1', paddingTop);
+            hoverVerticalLine.setAttribute('x2', paddingLeft);
+            hoverVerticalLine.setAttribute('y2', height - paddingBottom);
+            hoverVerticalLine.setAttribute('stroke', '#999');
+            hoverVerticalLine.setAttribute('stroke-width', '1.5');
+            hoverVerticalLine.setAttribute('stroke-dasharray', '5,5');
+            hoverVerticalLine.style.opacity = 0;
+            svg.appendChild(hoverVerticalLine);
+            
+            // 悬浮水平虚线
+            var hoverHorizontalLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            hoverHorizontalLine.setAttribute('x1', paddingLeft);
+            hoverHorizontalLine.setAttribute('y1', paddingTop);
+            hoverHorizontalLine.setAttribute('x2', width - paddingRight);
+            hoverHorizontalLine.setAttribute('y2', paddingTop);
+            hoverHorizontalLine.setAttribute('stroke', '#999');
+            hoverHorizontalLine.setAttribute('stroke-width', '1.5');
+            hoverHorizontalLine.setAttribute('stroke-dasharray', '5,5');
+            hoverHorizontalLine.style.opacity = 0;
+            svg.appendChild(hoverHorizontalLine);
             
             // 如果有成本价，添加水平虚线
             if (costPrice && costPrice !== 'N/A') {
@@ -3093,11 +3131,121 @@
             title.textContent = titleLabel || '净值走势';
             svg.appendChild(title);
 
-
-            
-
+            // 悬浮交互（动态显示虚线）
+            svg.addEventListener('mouseleave', function() {
+                hoverVerticalLine.style.opacity = 0;
+                hoverHorizontalLine.style.opacity = 0;
+                xAxisLabel.style.opacity = 0;
+                yAxisLabel.style.opacity = 0;
                 
-
+                // 重置信息显示区域
+                document.getElementById('infoDate').textContent = '-';
+                document.getElementById('infoNav').textContent = '-';
+                document.getElementById('infoChange').textContent = '-';
+                document.getElementById('infoChange').className = 'change-value';
+            });
+            
+            svg.addEventListener('mousemove', function(evt) {
+                var rect = svg.getBoundingClientRect();
+                var x = evt.clientX - rect.left;
+                var y = evt.clientY - rect.top;
+                
+                // 限定到绘图区域
+                var cx = Math.max(paddingLeft, Math.min(width - paddingRight, x));
+                var cy = Math.max(paddingTop, Math.min(height - paddingBottom, y));
+                
+                // 计算对应的数据索引
+                var ratio = (cx - paddingLeft) / chartWidth;
+                var fIndex = ratio * (values.length - 1);
+                var idx = Math.round(fIndex); // 四舍五入到最近的数据点
+                
+                // 获取当前数据点信息
+                var currentData = data[idx];
+                var currentNav = currentData.nav;
+                var currentDate = currentData.date;
+                
+                // 计算涨跌幅（如果有前一天数据）
+                var changePercent = '';
+                var changeClass = '';
+                if (idx > 0) {
+                    var prevNav = data[idx - 1].nav;
+                    var change = ((currentNav - prevNav) / prevNav * 100);
+                    changePercent = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
+                    changeClass = change >= 0 ? 'positive' : 'negative';
+                }
+                
+                // 设置垂直虚线位置
+                hoverVerticalLine.setAttribute('x1', cx);
+                hoverVerticalLine.setAttribute('x2', cx);
+                hoverVerticalLine.style.opacity = 1;
+                
+                // 设置水平虚线位置
+                var yPos = paddingTop + ((maxValue - currentNav) * chartHeight / valueRange);
+                hoverHorizontalLine.setAttribute('y1', yPos);
+                hoverHorizontalLine.setAttribute('y2', yPos);
+                hoverHorizontalLine.style.opacity = 1;
+                
+                // 更新信息显示区域
+                document.getElementById('infoDate').textContent = currentDate;
+                document.getElementById('infoNav').textContent = currentNav.toFixed(4);
+                
+                if (changePercent) {
+                    var changeElement = document.getElementById('infoChange');
+                    changeElement.textContent = changePercent;
+                    changeElement.className = 'change-value ' + changeClass;
+                } else {
+                    document.getElementById('infoChange').textContent = '-';
+                    document.getElementById('infoChange').className = 'change-value';
+                }
+                
+                // 更新持仓成本信息（如果鼠标移动时有成本价）
+                if (costPrice && costPrice !== 'N/A') {
+                    document.getElementById('infoCost').textContent = parseFloat(costPrice).toFixed(4);
+                }
+                
+                // 显示动态坐标轴标签
+                // X轴标签（交易日期）
+                xAxisLabel.setAttribute('x', cx);
+                xAxisLabel.setAttribute('y', height - paddingBottom + 35);
+                xAxisLabel.setAttribute('text-anchor', 'middle');
+                xAxisLabel.setAttribute('font-size', '12');
+                xAxisLabel.setAttribute('fill', '#007bff');
+                xAxisLabel.setAttribute('font-weight', 'bold');
+                xAxisLabel.textContent = currentDate;
+                xAxisLabel.style.opacity = 1;
+                if (!svg.contains(xAxisLabel)) {
+                    svg.appendChild(xAxisLabel);
+                }
+                
+                // Y轴标签（单位净值）
+                yAxisLabel.setAttribute('x', paddingLeft - 15);
+                yAxisLabel.setAttribute('y', yPos + 4);
+                yAxisLabel.setAttribute('text-anchor', 'end');
+                yAxisLabel.setAttribute('font-size', '12');
+                yAxisLabel.setAttribute('fill', '#007bff');
+                yAxisLabel.setAttribute('font-weight', 'bold');
+                yAxisLabel.textContent = currentNav.toFixed(4);
+                yAxisLabel.style.opacity = 1;
+                if (!svg.contains(yAxisLabel)) {
+                    svg.appendChild(yAxisLabel);
+                }
+            });
+            
+            // 初始化信息显示区域
+            document.getElementById('infoDate').textContent = '-';
+            document.getElementById('infoNav').textContent = '-';
+            document.getElementById('infoChange').textContent = '-';
+            document.getElementById('infoChange').className = 'change-value';
+            
+            if (costPrice && costPrice !== 'N/A') {
+                try {
+                    document.getElementById('infoCost').textContent = parseFloat(costPrice).toFixed(4);
+                } catch (e) {
+                    document.getElementById('infoCost').textContent = '-';
+                }
+            } else {
+                document.getElementById('infoCost').textContent = '-';
+            }
             
             // 将SVG添加到容器
             chartContainer.appendChild(svg);
