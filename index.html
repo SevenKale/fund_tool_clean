@@ -515,39 +515,42 @@
             font-size: 14px;
         }
         
-        /* 新的信息显示区域样式 */
+        /* 新的信息显示区域样式 - 优化版本 */
         .chart-info-display {
-            background: rgba(0,0,0,0.9);
-            color: #fff;
-            padding: 12px 16px;
-            border-radius: 8px;
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 16px 20px;
+            border-radius: 12px;
             margin: 16px 0;
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border: 1px solid rgba(0,123,255,0.3);
+            box-shadow: 0 4px 20px rgba(0,123,255,0.15);
             text-align: center;
         }
         .chart-info-display .info-row {
-            margin: 4px 0;
+            margin: 8px 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 4px 0;
         }
         .chart-info-display .info-label {
-            color: #ccc;
+            color: #666;
             font-size: 14px;
+            font-weight: 500;
         }
         .chart-info-display .info-value {
-            color: #fff;
+            color: #333;
             font-weight: bold;
             font-size: 14px;
         }
         .chart-info-display .nav-value {
             color: #007bff;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: bold;
         }
         .chart-info-display .change-value {
             font-size: 14px;
+            font-weight: bold;
         }
         .chart-info-display .change-value.positive {
             color: #dc3545;  /* 红涨 */
@@ -558,13 +561,14 @@
         .chart-info-display .cost-value {
             color: #ff6b6b;
             font-size: 14px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>我的基金数据</h1>
-        <div class="timestamp">生成时间: 2025-08-31 13:29:01</div>
+        <div class="timestamp">生成时间: 2025-08-31 13:41:21</div>
         
         <!-- 弹框 -->
         <div id="fundModal" class="modal">
@@ -591,17 +595,13 @@
                     <div class="info-row">
                         <span class="info-label">交易日期:</span>
                         <span class="info-value" id="infoDate">-</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">单位净值:</span>
+                        <span class="info-label" style="margin-left: 40px;">单位净值:</span>
                         <span class="nav-value" id="infoNav">-</span>
                     </div>
                     <div class="info-row">
                         <span class="info-label">涨跌幅:</span>
                         <span class="change-value" id="infoChange">-</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">持仓成本:</span>
+                        <span class="info-label" style="margin-left: 40px;">持仓成本:</span>
                         <span class="cost-value" id="infoCost">-</span>
                     </div>
                 </div>
@@ -3138,6 +3138,12 @@
                 xAxisLabel.style.opacity = 0;
                 yAxisLabel.style.opacity = 0;
                 
+                // 移除同心圆标记
+                var existingCircle = svg.querySelector('.hover-circle');
+                if (existingCircle) {
+                    svg.removeChild(existingCircle);
+                }
+                
                 // 重置信息显示区域
                 document.getElementById('infoDate').textContent = '-';
                 document.getElementById('infoNav').textContent = '-';
@@ -3184,6 +3190,48 @@
                 hoverHorizontalLine.setAttribute('y1', yPos);
                 hoverHorizontalLine.setAttribute('y2', yPos);
                 hoverHorizontalLine.style.opacity = 1;
+                
+                // 创建同心圆标记（确保XY轴交点落在曲线上）
+                // 移除之前的同心圆
+                var existingCircle = svg.querySelector('.hover-circle');
+                if (existingCircle) {
+                    svg.removeChild(existingCircle);
+                }
+                
+                // 创建同心圆组
+                var circleGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                circleGroup.setAttribute('class', 'hover-circle');
+                
+                // 外圈（细橙色环）
+                var outerCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                outerCircle.setAttribute('cx', cx);
+                outerCircle.setAttribute('cy', yPos);
+                outerCircle.setAttribute('r', '12');
+                outerCircle.setAttribute('fill', 'none');
+                outerCircle.setAttribute('stroke', '#ff6b6b');
+                outerCircle.setAttribute('stroke-width', '1.5');
+                circleGroup.appendChild(outerCircle);
+                
+                // 中圈（白色圆）
+                var middleCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                middleCircle.setAttribute('cx', cx);
+                middleCircle.setAttribute('cy', yPos);
+                middleCircle.setAttribute('r', '8');
+                middleCircle.setAttribute('fill', 'white');
+                middleCircle.setAttribute('stroke', 'none');
+                circleGroup.appendChild(middleCircle);
+                
+                // 内圈（橙色实心圆）
+                var innerCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                innerCircle.setAttribute('cx', cx);
+                innerCircle.setAttribute('cy', yPos);
+                innerCircle.setAttribute('r', '4');
+                innerCircle.setAttribute('fill', '#ff6b6b');
+                innerCircle.setAttribute('stroke', 'none');
+                circleGroup.appendChild(innerCircle);
+                
+                // 将同心圆组添加到SVG
+                svg.appendChild(circleGroup);
                 
                 // 更新信息显示区域
                 document.getElementById('infoDate').textContent = currentDate;
