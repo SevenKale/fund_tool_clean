@@ -572,7 +572,7 @@
 <body>
     <div class="container">
         <h1>我的基金数据</h1>
-        <div class="timestamp">生成时间: 2025-08-31 14:01:16</div>
+        <div class="timestamp">生成时间: 2025-08-31 14:14:47</div>
         
         <!-- 弹框 -->
         <div id="fundModal" class="modal">
@@ -3177,6 +3177,26 @@
                 var fIndex = ratio * (values.length - 1);
                 var idx = Math.round(fIndex); // 四舍五入到最近的数据点
                 
+                // 计算更精确的曲线位置（插值计算）
+                var exactX = cx;
+                var exactY;
+                
+                if (fIndex >= 0 && fIndex < values.length - 1) {
+                    // 在两个数据点之间进行线性插值
+                    var idx1 = Math.floor(fIndex);
+                    var idx2 = Math.ceil(fIndex);
+                    var weight = fIndex - idx1;
+                    
+                    var nav1 = data[idx1].nav;
+                    var nav2 = data[idx2].nav;
+                    var interpolatedNav = nav1 + (nav2 - nav1) * weight;
+                    
+                    exactY = paddingTop + ((maxValue - interpolatedNav) * chartHeight / valueRange);
+                } else {
+                    // 边界情况，使用最近的数据点
+                    exactY = paddingTop + ((maxValue - currentNav) * chartHeight / valueRange);
+                }
+                
                 // 获取当前数据点信息
                 var currentData = data[idx];
                 var currentNav = currentData.nav;
@@ -3197,10 +3217,9 @@
                 hoverVerticalLine.setAttribute('x2', cx);
                 hoverVerticalLine.style.opacity = 1;
                 
-                // 设置水平虚线位置
-                var yPos = paddingTop + ((maxValue - currentNav) * chartHeight / valueRange);
-                hoverHorizontalLine.setAttribute('y1', yPos);
-                hoverHorizontalLine.setAttribute('y2', yPos);
+                // 设置水平虚线位置（使用插值计算的精确位置）
+                hoverHorizontalLine.setAttribute('y1', exactY);
+                hoverHorizontalLine.setAttribute('y2', exactY);
                 hoverHorizontalLine.style.opacity = 1;
                 
                 // 创建空心圆标记（确保XY轴交点落在曲线上）
@@ -3214,14 +3233,14 @@
                 var circleGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
                 circleGroup.setAttribute('class', 'hover-circle');
                 
-                // 空心圆（与趋势线颜色相近）
+                // 空心圆（与趋势线颜色相近，边框加粗）
                 var hollowCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                hollowCircle.setAttribute('cx', cx);
-                hollowCircle.setAttribute('cy', yPos);
+                hollowCircle.setAttribute('cx', exactX);
+                hollowCircle.setAttribute('cy', exactY);
                 hollowCircle.setAttribute('r', '8');
                 hollowCircle.setAttribute('fill', 'none');
                 hollowCircle.setAttribute('stroke', '#007bff');
-                hollowCircle.setAttribute('stroke-width', '2');
+                hollowCircle.setAttribute('stroke-width', '4');
                 circleGroup.appendChild(hollowCircle);
                 
                 // 将空心圆组添加到SVG
@@ -3261,7 +3280,7 @@
                 
                 // Y轴标签（单位净值）
                 yAxisLabel.setAttribute('x', paddingLeft - 15);
-                yAxisLabel.setAttribute('y', yPos + 4);
+                yAxisLabel.setAttribute('y', exactY + 4);
                 yAxisLabel.setAttribute('text-anchor', 'end');
                 yAxisLabel.setAttribute('font-size', '12');
                 yAxisLabel.setAttribute('fill', '#007bff');
