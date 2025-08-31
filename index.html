@@ -567,18 +567,89 @@
             font-size: 14px;
             font-weight: bold;
         }
+        
+        /* API 配置提示样式 */
+        .api-config-tip {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            margin: 16px 0;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(255, 193, 7, 0.2);
+        }
+        .tip-content {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .tip-icon {
+            font-size: 20px;
+            margin-right: 8px;
+        }
+        .tip-text {
+            color: #856404;
+            font-weight: 500;
+            flex: 1;
+        }
+        .tip-close {
+            background: none;
+            border: none;
+            color: #856404;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .tip-close:hover {
+            color: #533f03;
+        }
+        .tip-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .tip-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .tip-btn:hover {
+            background: #0056b3;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>我的基金数据</h1>
-        <div class="timestamp">生成时间: 2025-08-31 14:38:38</div>
+        <div class="timestamp">生成时间: 2025-08-31 14:58:23</div>
         
         <!-- 弹框 -->
         <div id="fundModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h2 class="modal-title" id="modalTitle">基金详情</h2>
+                <!-- API 配置提示区域 -->
+                <div id="apiConfigTip" class="api-config-tip" style="display: none;">
+                    <div class="tip-content">
+                        <span class="tip-icon">⚠️</span>
+                        <span class="tip-text">检测到 GitHub Pages 环境，请配置可访问的 API 地址</span>
+                        <button class="tip-close" onclick="hideApiConfigTip()">×</button>
+                    </div>
+                    <div class="tip-actions">
+                        <button class="tip-btn" onclick="configureApiFromUrl()">通过 URL 配置</button>
+                        <button class="tip-btn" onclick="configureApiFromLocalStorage()">通过控制台配置</button>
+                        <button class="tip-btn" onclick="openLocalFile()">本地打开文件</button>
+                    </div>
+                </div>
                 <div class="header-row">
                     <div class="range-section">
                         <span class="label-strong">选择时间</span>
@@ -2755,24 +2826,83 @@
                         if (saved) return saved;
                     } catch (e) {}
 
-                    // 默认策略：
-                    // - 如果在 http(s) 环境且有同源后端，可用相对路径
-                    // - 如果是 GitHub Pages（github.io），建议配置公开 API 地址
+                    // 环境检测与默认策略
                     var origin = window.location.origin || '';
+                    var hostname = window.location.hostname || '';
+                    
                     if (/^https?:\/\//i.test(origin)) {
-                        if (/github\.io$/i.test(window.location.hostname)) {
-                            // 在 GitHub Pages 上，强烈建议通过 ?api= 或 localStorage 配置公开可访问的 HTTPS API 基址
-                            // 临时回退为同源相对路径，若无后端会 404
-                            return origin; 
+                        if (/github\.io$/i.test(hostname)) {
+                            // GitHub Pages 环境：显示配置提示，返回空值强制用户配置
+                            console.warn('检测到 GitHub Pages 环境，请通过以下方式配置 API 地址：');
+                            console.warn('1. URL 参数：?api=https://你的公开API域名');
+                            console.warn('2. 本地设置：localStorage.API_BASE = "https://你的公开API域名"');
+                            return null; // 返回 null 强制用户配置
                         }
+                        // 其他 HTTPS 环境，尝试同源
                         return origin;
                     }
-                } catch (e) {}
-                // 本地文件或未知协议下的回退
+                } catch (e) {
+                    console.error('API 配置解析错误:', e);
+                }
+                
+                // 本地文件环境下的回退
                 return 'http://127.0.0.1:5000';
             }
-            window.API_BASE = (resolveApiBase() || '').replace(/\/$/, '');
+            
+            var apiBase = resolveApiBase();
+            if (!apiBase) {
+                // 如果没有有效的 API 地址，显示配置提示
+                console.error('未配置有效的 API 地址！');
+                console.error('请通过以下方式之一进行配置：');
+                console.error('1. 在 URL 后添加 ?api=https://你的公开API域名');
+                console.error('2. 在浏览器控制台执行：localStorage.API_BASE = "https://你的公开API域名"');
+                console.error('3. 如果是本地使用，请直接打开 HTML 文件而不是通过 GitHub Pages');
+            }
+            window.API_BASE = (apiBase || '').replace(/\/$/, '');
+            
+            // 如果是 GitHub Pages 环境且没有配置 API，显示配置提示
+            if (!apiBase && /github\.io$/i.test(window.location.hostname || '')) {
+                showApiConfigTip();
+            }
         })();
+        
+        // API 配置提示相关函数
+        function showApiConfigTip() {
+            var tip = document.getElementById('apiConfigTip');
+            if (tip) {
+                tip.style.display = 'block';
+            }
+        }
+        
+        function hideApiConfigTip() {
+            var tip = document.getElementById('apiConfigTip');
+            if (tip) {
+                tip.style.display = 'none';
+            }
+        }
+        
+        function configureApiFromUrl() {
+            var apiUrl = prompt('请输入公开可访问的 API 地址（例如：https://your-api-domain.com）：');
+            if (apiUrl) {
+                try {
+                    localStorage.setItem('API_BASE', apiUrl);
+                    window.API_BASE = apiUrl.replace(/\/$/, '');
+                    hideApiConfigTip();
+                    alert('API 地址已配置，请刷新页面');
+                } catch (e) {
+                    alert('配置失败：' + e.message);
+                }
+            }
+        }
+        
+        function configureApiFromLocalStorage() {
+            alert('请在浏览器控制台（F12）中执行以下命令：\n\nlocalStorage.API_BASE = "https://你的公开API域名"\n\n然后刷新页面');
+        }
+        
+        function openLocalFile() {
+            alert('请直接双击打开本地的 HTML 文件，而不是通过 GitHub Pages 访问。\n\n文件路径：' + window.location.pathname.split('/').pop());
+        }
+        
         function showTab(tabName) {
             // 隐藏所有tab内容
             var tabContents = document.getElementsByClassName('tab-content');
