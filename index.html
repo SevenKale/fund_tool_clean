@@ -637,7 +637,7 @@
 <body>
     <div class="container">
         <h1>我的基金数据</h1>
-        <div class="timestamp">生成时间: 2025-09-07 23:17:47</div>
+        <div class="timestamp">生成时间: 2025-09-07 23:58:54</div>
         
         <!-- 弹框 -->
         <div id="fundModal" class="modal">
@@ -647,14 +647,17 @@
                 <!-- API 配置提示区域 -->
                 <div id="apiConfigTip" class="api-config-tip" style="display: none;">
                     <div class="tip-content">
-                        <span class="tip-icon">⚠️</span>
-                        <span class="tip-text">检测到 GitHub Pages 环境，请配置可访问的 API 地址</span>
+                        <span class="tip-icon">🔧</span>
+                        <span class="tip-text">检测到 GitHub Pages 环境，需要配置可访问的 API 地址才能查看基金走势图</span>
                         <button class="tip-close" onclick="hideApiConfigTip()">×</button>
                     </div>
                     <div class="tip-actions">
-                        <button class="tip-btn" onclick="configureApiFromUrl()">通过 URL 配置</button>
-                        <button class="tip-btn" onclick="configureApiFromLocalStorage()">通过控制台配置</button>
-                        <button class="tip-btn" onclick="openLocalFile()">本地打开文件</button>
+                        <button class="tip-btn" onclick="configureApiFromUrl()">📝 输入API地址</button>
+                        <button class="tip-btn" onclick="configureApiFromLocalStorage()">💻 控制台配置</button>
+                        <button class="tip-btn" onclick="openLocalFile()">📁 本地打开</button>
+                    </div>
+                    <div style="margin-top: 12px; font-size: 12px; color: #856404;">
+                        💡 提示：如果您还没有部署API，请参考 <a href="https://github.com/your-username/fund_tool/blob/main/DEPLOYMENT.md" target="_blank" style="color: #007bff;">部署指南</a>
                     </div>
                 </div>
                 <div class="header-row">
@@ -3113,26 +3116,109 @@
         }
         
         function configureApiFromUrl() {
-            var apiUrl = prompt('请输入公开可访问的 API 地址（例如：https://your-api-domain.com）：');
+            var apiUrl = prompt('请输入公开可访问的 API 地址：\n\n示例：\n• https://your-fund-api.herokuapp.com\n• https://your-fund-api.railway.app\n• https://your-fund-api.onrender.com\n\n注意：请确保API地址以 https:// 开头');
             if (apiUrl) {
+                // 验证URL格式
+                if (!apiUrl.startsWith('http://') && !apiUrl.startsWith('https://')) {
+                    alert('错误：API地址必须以 http:// 或 https:// 开头');
+                    return;
+                }
+                
                 try {
                     localStorage.setItem('API_BASE', apiUrl);
                     window.API_BASE = apiUrl.replace(/\/$/, '');
                     hideApiConfigTip();
-                    alert('API 地址已配置，请刷新页面');
+                    
+                    // 测试API连接
+                    testApiConnection(apiUrl);
                 } catch (e) {
                     alert('配置失败：' + e.message);
                 }
             }
         }
         
+        function testApiConnection(apiUrl) {
+            var testUrl = apiUrl.replace(/\/$/, '') + '/api/health';
+            fetch(testUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('✅ API 配置成功！\n\nAPI地址：' + apiUrl + '\n状态：' + data.message + '\n\n页面将自动刷新以应用新配置。');
+                        window.location.reload();
+                    } else {
+                        alert('⚠️ API 配置已保存，但连接测试失败。\n\n请检查API地址是否正确，或稍后手动刷新页面。');
+                    }
+                })
+                .catch(error => {
+                    alert('⚠️ API 配置已保存，但连接测试失败。\n\n错误：' + error.message + '\n\n请检查API地址是否正确，或稍后手动刷新页面。');
+                });
+        }
+        
         function configureApiFromLocalStorage() {
-            alert('请在浏览器控制台（F12）中执行以下命令：\n\nlocalStorage.API_BASE = "https://你的公开API域名"\n\n然后刷新页面');
+            var instructions = '🔧 通过控制台配置API地址：\n\n' +
+                '1. 按 F12 打开开发者工具\n' +
+                '2. 切换到 "Console" 标签页\n' +
+                '3. 输入以下命令（替换为您的实际API地址）：\n\n' +
+                'localStorage.API_BASE = "https://your-fund-api.herokuapp.com"\n\n' +
+                '4. 按回车执行命令\n' +
+                '5. 刷新页面\n\n' +
+                '💡 提示：您也可以直接复制粘贴这个命令到控制台';
+            
+            alert(instructions);
+            
+            // 尝试自动打开控制台（某些浏览器支持）
+            if (console && console.clear) {
+                console.log('💡 请将以下命令复制到控制台执行：');
+                console.log('localStorage.API_BASE = "https://your-fund-api.herokuapp.com"');
+                console.log('然后刷新页面');
+            }
         }
         
         function openLocalFile() {
-            alert('请直接双击打开本地的 HTML 文件，而不是通过 GitHub Pages 访问。\n\n文件路径：' + window.location.pathname.split('/').pop());
+            var fileName = window.location.pathname.split('/').pop();
+            var instructions = '📁 本地打开文件：\n\n' +
+                '1. 下载HTML文件到本地\n' +
+                '2. 双击打开文件（不要通过GitHub Pages访问）\n' +
+                '3. 确保本地运行API服务器：\n' +
+                '   python combined_fund_tracker.py --api\n\n' +
+                '当前文件：' + fileName;
+            
+            alert(instructions);
         }
+        
+        // API状态检测函数
+        function checkApiStatus() {
+            if (!window.API_BASE) {
+                return false;
+            }
+            
+            var healthUrl = window.API_BASE + '/api/health';
+            fetch(healthUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('✅ API连接正常：', data.message);
+                        return true;
+                    } else {
+                        console.warn('⚠️ API响应异常：', data.message);
+                        return false;
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ API连接失败：', error.message);
+                    return false;
+                });
+        }
+        
+        // 页面加载时检查API状态
+        window.addEventListener('load', function() {
+            if (window.API_BASE) {
+                console.log('🔍 检测到API配置：', window.API_BASE);
+                checkApiStatus();
+            } else {
+                console.warn('⚠️ 未检测到API配置');
+            }
+        });
         
         function showTab(tabName) {
             // 隐藏所有tab内容
