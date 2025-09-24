@@ -480,9 +480,44 @@
         }
         .modal-title {
             color: #333333;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             text-align: center;
             font-size: 24px;
+        }
+        .fund-info-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+        .info-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        .info-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        .info-value.positive {
+            color: #dc3545;
+        }
+        .info-value.negative {
+            color: #28a745;
+        }
+        .info-value.neutral {
+            color: #6c757d;
         }
         .range-buttons {
             display: flex;
@@ -562,13 +597,33 @@
 <body>
     <div class="container">
         <h1>我的基金数据</h1>
-        <div class="timestamp">生成时间: 2025-09-24 19:10:09</div>
+        <div class="timestamp">生成时间: 2025-09-24 19:56:36</div>
         
         <!-- 弹框 -->
         <div id="fundModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h2 class="modal-title" id="modalTitle">基金详情</h2>
+                <!-- 基金信息卡片 -->
+                <div class="fund-info-card">
+                    <div class="info-item">
+                        <span class="info-label">交易日期</span>
+                        <span class="info-value" id="transactionDate">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">涨跌幅</span>
+                        <span class="info-value" id="changeRate">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">单位净值</span>
+                        <span class="info-value" id="unitNav">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">持仓成本</span>
+                        <span class="info-value" id="holdingCost">-</span>
+                    </div>
+                </div>
+                
                 <div class="header-row">
                     <div class="range-section">
                         <span class="label-strong">选择时间</span>
@@ -593,13 +648,13 @@
         
         <div class="summary">
             <h3>汇总信息</h3>
-            <p>监控基金: <strong>72</strong> 只, 钞钞的基金: <strong>20</strong> 只, 垚垚的基金: <strong>16</strong> 只, 境外基金: <strong>6</strong> 只</p>
+            <p>监控基金: <strong>72</strong> 只, 钞钞的基金: <strong>18</strong> 只, 垚垚的基金: <strong>15</strong> 只, 境外基金: <strong>6</strong> 只</p>
             <p>监控基金平均涨跌率: <strong class="positive">1.42%</strong></p>
             <p>监控基金上涨: <span class="positive">60</span> 只, 下跌: <span class="negative">12</span> 只, 平盘: <span class="neutral">0</span> 只</p>
-            <p>钞钞平均涨跌率: <strong class="positive">1.17%</strong>，上涨: <span class="positive">17</span> 只, 下跌: <span class="negative">3</span> 只, 平盘: <span class="neutral">0</span> 只</p>
-            <p>垚垚平均涨跌率: <strong class="positive">1.18%</strong>，上涨: <span class="positive">13</span> 只, 下跌: <span class="negative">3</span> 只, 平盘: <span class="neutral">0</span> 只</p>
-            <p>钞钞当日预估收益: <strong class="profit-positive">238.90</strong></p>
-            <p>垚垚当日预估收益: <strong class="profit-positive">108.11</strong></p>
+            <p>钞钞平均涨跌率: <strong class="positive">1.06%</strong>，上涨: <span class="positive">15</span> 只, 下跌: <span class="negative">3</span> 只, 平盘: <span class="neutral">0</span> 只</p>
+            <p>垚垚平均涨跌率: <strong class="positive">1.15%</strong>，上涨: <span class="positive">12</span> 只, 下跌: <span class="negative">3</span> 只, 平盘: <span class="neutral">0</span> 只</p>
+            <p>钞钞当日预估收益: <strong class="profit-positive">226.07</strong></p>
+            <p>垚垚当日预估收益: <strong class="profit-positive">94.88</strong></p>
         </div>
         
         <div class="tab-container">
@@ -723,6 +778,104 @@
                         <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
                     </td>
                     <td class="positive">+1.33%</td>
+                </tr>
+                <tr class="fund-row" ondblclick="showFundDetail('006810', '泰康香港银行指数C', 'N/A')">
+                    <td>006810</td>
+                    <td>泰康香港银行指数C</td>
+                    <td><span class="category-tag category-港股金融">港股金融</span></td>
+                    <td>
+                        1.5040
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
+                    </td>
+                    <td>
+                        1.5017
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
+                    </td>
+                    <td class="negative">-0.15%</td>
+                </tr>
+                <tr class="fund-row" ondblclick="showFundDetail('018388', '华泰柏瑞港股通红利ETF联接基金C', 'N/A')">
+                    <td>018388</td>
+                    <td>华泰柏瑞港股通红利ETF联接基金C</td>
+                    <td><span class="category-tag category-港股金融">港股金融</span></td>
+                    <td>
+                        1.3601
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
+                    </td>
+                    <td>
+                        1.3600
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
+                    </td>
+                    <td class="negative">-0.01%</td>
+                </tr>
+                <tr class="fund-row" ondblclick="showFundDetail('021457', '易方达恒生红利低波ETF联接A', 'N/A')">
+                    <td>021457</td>
+                    <td>易方达恒生红利低波ETF联接A</td>
+                    <td><span class="category-tag category-港股金融">港股金融</span></td>
+                    <td>
+                        1.2560
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
+                    </td>
+                    <td>
+                        1.2555
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
+                    </td>
+                    <td class="negative">-0.04%</td>
+                </tr>
+                <tr class="fund-row" ondblclick="showFundDetail('016573', '招商中证银行AH价格优选ETF发起式联接C', 'N/A')">
+                    <td>016573</td>
+                    <td>招商中证银行AH价格优选ETF发起式联接C</td>
+                    <td><span class="category-tag category-金融">金融</span></td>
+                    <td>
+                        1.3755
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
+                    </td>
+                    <td>
+                        1.3725
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
+                    </td>
+                    <td class="negative">-0.22%</td>
+                </tr>
+                <tr class="fund-row" ondblclick="showFundDetail('019026', '易方达金融行业股票发起式C', 'N/A')">
+                    <td>019026</td>
+                    <td>易方达金融行业股票发起式C</td>
+                    <td><span class="category-tag category-金融">金融</span></td>
+                    <td>
+                        1.5792
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
+                    </td>
+                    <td>
+                        1.5874
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
+                    </td>
+                    <td class="positive">+0.52%</td>
+                </tr>
+                <tr class="fund-row" ondblclick="showFundDetail('013416', '永赢中证全指医疗器械ETF发起联接C', 'N/A')">
+                    <td>013416</td>
+                    <td>永赢中证全指医疗器械ETF发起联接C</td>
+                    <td><span class="category-tag category-医疗器械">医疗器械</span></td>
+                    <td>
+                        0.6678
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
+                    </td>
+                    <td>
+                        0.6798
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
+                    </td>
+                    <td class="positive">+1.79%</td>
+                </tr>
+                <tr class="fund-row" ondblclick="showFundDetail('017633', '汇添富中证全指医疗器械ETF发起式联接C', 'N/A')">
+                    <td>017633</td>
+                    <td>汇添富中证全指医疗器械ETF发起式联接C</td>
+                    <td><span class="category-tag category-医疗器械">医疗器械</span></td>
+                    <td>
+                        0.8095
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
+                    </td>
+                    <td>
+                        0.8240
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
+                    </td>
+                    <td class="positive">+1.79%</td>
                 </tr>
                 <tr class="fund-row" ondblclick="showFundDetail('001665', '平安鑫安混合C', 'N/A')">
                     <td>001665</td>
@@ -990,76 +1143,6 @@
                     </td>
                     <td class="positive">+2.23%</td>
                 </tr>
-                <tr class="fund-row" ondblclick="showFundDetail('006810', '泰康香港银行指数C', 'N/A')">
-                    <td>006810</td>
-                    <td>泰康香港银行指数C</td>
-                    <td><span class="category-tag category-港股金融">港股金融</span></td>
-                    <td>
-                        1.5040
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
-                    </td>
-                    <td>
-                        1.5017
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
-                    </td>
-                    <td class="negative">-0.15%</td>
-                </tr>
-                <tr class="fund-row" ondblclick="showFundDetail('018388', '华泰柏瑞港股通红利ETF联接基金C', 'N/A')">
-                    <td>018388</td>
-                    <td>华泰柏瑞港股通红利ETF联接基金C</td>
-                    <td><span class="category-tag category-港股金融">港股金融</span></td>
-                    <td>
-                        1.3601
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
-                    </td>
-                    <td>
-                        1.3600
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
-                    </td>
-                    <td class="negative">-0.01%</td>
-                </tr>
-                <tr class="fund-row" ondblclick="showFundDetail('021457', '易方达恒生红利低波ETF联接A', 'N/A')">
-                    <td>021457</td>
-                    <td>易方达恒生红利低波ETF联接A</td>
-                    <td><span class="category-tag category-港股金融">港股金融</span></td>
-                    <td>
-                        1.2560
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
-                    </td>
-                    <td>
-                        1.2555
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
-                    </td>
-                    <td class="negative">-0.04%</td>
-                </tr>
-                <tr class="fund-row" ondblclick="showFundDetail('016573', '招商中证银行AH价格优选ETF发起式联接C', 'N/A')">
-                    <td>016573</td>
-                    <td>招商中证银行AH价格优选ETF发起式联接C</td>
-                    <td><span class="category-tag category-金融">金融</span></td>
-                    <td>
-                        1.3755
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
-                    </td>
-                    <td>
-                        1.3725
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
-                    </td>
-                    <td class="negative">-0.22%</td>
-                </tr>
-                <tr class="fund-row" ondblclick="showFundDetail('019026', '易方达金融行业股票发起式C', 'N/A')">
-                    <td>019026</td>
-                    <td>易方达金融行业股票发起式C</td>
-                    <td><span class="category-tag category-金融">金融</span></td>
-                    <td>
-                        1.5792
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
-                    </td>
-                    <td>
-                        1.5874
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
-                    </td>
-                    <td class="positive">+0.52%</td>
-                </tr>
                 <tr class="fund-row" ondblclick="showFundDetail('004857', '广发中证全指建筑材料指数C', 'N/A')">
                     <td>004857</td>
                     <td>广发中证全指建筑材料指数C</td>
@@ -1130,20 +1213,6 @@
                     </td>
                     <td class="positive">+1.03%</td>
                 </tr>
-                <tr class="fund-row" ondblclick="showFundDetail('012842', '易方达中证军工(LOF)C', 'N/A')">
-                    <td>012842</td>
-                    <td>易方达中证军工(LOF)C</td>
-                    <td><span class="category-tag category-军工">军工</span></td>
-                    <td>
-                        1.4086
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
-                    </td>
-                    <td>
-                        1.4238
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
-                    </td>
-                    <td class="positive">+1.08%</td>
-                </tr>
                 <tr class="fund-row" ondblclick="showFundDetail('013566', '华夏军工安全混合C', 'N/A')">
                     <td>013566</td>
                     <td>华夏军工安全混合C</td>
@@ -1157,6 +1226,20 @@
                         <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
                     </td>
                     <td class="positive">+1.07%</td>
+                </tr>
+                <tr class="fund-row" ondblclick="showFundDetail('015790', '永赢高端装备智选混合发起C', 'N/A')">
+                    <td>015790</td>
+                    <td>永赢高端装备智选混合发起C</td>
+                    <td><span class="category-tag category-军工">军工</span></td>
+                    <td>
+                        0.8752
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
+                    </td>
+                    <td>
+                        0.8871
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
+                    </td>
+                    <td class="positive">+1.36%</td>
                 </tr>
                 <tr class="fund-row" ondblclick="showFundDetail('015945', '易方达国防军工混合C', 'N/A')">
                     <td>015945</td>
@@ -1298,6 +1381,34 @@
                     </td>
                     <td class="positive">+1.51%</td>
                 </tr>
+                <tr class="fund-row" ondblclick="showFundDetail('013275', '富国中证煤炭指数(LOF)C', 'N/A')">
+                    <td>013275</td>
+                    <td>富国中证煤炭指数(LOF)C</td>
+                    <td><span class="category-tag category-传统能源">传统能源</span></td>
+                    <td>
+                        1.9280
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
+                    </td>
+                    <td>
+                        1.9259
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
+                    </td>
+                    <td class="negative">-0.11%</td>
+                </tr>
+                <tr class="fund-row" ondblclick="showFundDetail('016814', '国联中证煤炭指数C', 'N/A')">
+                    <td>016814</td>
+                    <td>国联中证煤炭指数C</td>
+                    <td><span class="category-tag category-传统能源">传统能源</span></td>
+                    <td>
+                        1.7760
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
+                    </td>
+                    <td>
+                        1.7740
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
+                    </td>
+                    <td class="negative">-0.11%</td>
+                </tr>
                 <tr class="fund-row" ondblclick="showFundDetail('002834', '华夏新锦绣混合C', 'N/A')">
                     <td>002834</td>
                     <td>华夏新锦绣混合C</td>
@@ -1438,34 +1549,6 @@
                     </td>
                     <td class="positive">+0.82%</td>
                 </tr>
-                <tr class="fund-row" ondblclick="showFundDetail('013275', '富国中证煤炭指数(LOF)C', 'N/A')">
-                    <td>013275</td>
-                    <td>富国中证煤炭指数(LOF)C</td>
-                    <td><span class="category-tag category-传统能源">传统能源</span></td>
-                    <td>
-                        1.9280
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
-                    </td>
-                    <td>
-                        1.9259
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
-                    </td>
-                    <td class="negative">-0.11%</td>
-                </tr>
-                <tr class="fund-row" ondblclick="showFundDetail('013416', '永赢中证全指医疗器械ETF发起联接C', 'N/A')">
-                    <td>013416</td>
-                    <td>永赢中证全指医疗器械ETF发起联接C</td>
-                    <td><span class="category-tag category-医疗器械">医疗器械</span></td>
-                    <td>
-                        0.6678
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
-                    </td>
-                    <td>
-                        0.6798
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
-                    </td>
-                    <td class="positive">+1.79%</td>
-                </tr>
                 <tr class="fund-row" ondblclick="showFundDetail('014565', '天弘恒生沪深港创新药精选50ETF发起联接C', 'N/A')">
                     <td>014565</td>
                     <td>天弘恒生沪深港创新药精选50ETF发起联接C</td>
@@ -1508,20 +1591,6 @@
                     </td>
                     <td class="positive">+1.32%</td>
                 </tr>
-                <tr class="fund-row" ondblclick="showFundDetail('016814', '国联中证煤炭指数C', 'N/A')">
-                    <td>016814</td>
-                    <td>国联中证煤炭指数C</td>
-                    <td><span class="category-tag category-传统能源">传统能源</span></td>
-                    <td>
-                        1.7760
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
-                    </td>
-                    <td>
-                        1.7740
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
-                    </td>
-                    <td class="negative">-0.11%</td>
-                </tr>
                 <tr class="fund-row" ondblclick="showFundDetail('017227', '富国中证全指家用电器ETF发起式联接C', 'N/A')">
                     <td>017227</td>
                     <td>富国中证全指家用电器ETF发起式联接C</td>
@@ -1535,20 +1604,6 @@
                         <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
                     </td>
                     <td class="positive">+0.75%</td>
-                </tr>
-                <tr class="fund-row" ondblclick="showFundDetail('017633', '汇添富中证全指医疗器械ETF发起式联接C', 'N/A')">
-                    <td>017633</td>
-                    <td>汇添富中证全指医疗器械ETF发起式联接C</td>
-                    <td><span class="category-tag category-医疗器械">医疗器械</span></td>
-                    <td>
-                        0.8095
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
-                    </td>
-                    <td>
-                        0.8240
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
-                    </td>
-                    <td class="positive">+1.79%</td>
                 </tr>
                 <tr class="fund-row" ondblclick="showFundDetail('018647', '易方达中证家电龙头ETF联接发起式C', 'N/A')">
                     <td>018647</td>
@@ -1693,23 +1748,23 @@
                     <td class="positive">146.03</td>
                     <td class="positive">+9.81%</td>
                 </tr>
-                <tr class="fund-row" ondblclick="showFundDetail('021378', '兴业中证港股通互联网指数发起式C', 'N/A')">
-                    <td>021378</td>
-                    <td>兴业中证港股通互联网指数发起式C</td>
-                    <td><span class="category-tag category-港股科技">港股科技</span></td>
+                <tr class="fund-row" ondblclick="showFundDetail('018388', '华泰柏瑞港股通红利ETF联接基金C', '1.3881')">
+                    <td>018388</td>
+                    <td>华泰柏瑞港股通红利ETF联接基金C</td>
+                    <td><span class="category-tag category-港股金融">港股金融</span></td>
                     <td>
-                        1.7502
+                        1.3601
                         <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
                     </td>
                     <td>
-                        1.7983
+                        1.3600
                         <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
                     </td>
-                    <td class="positive">+2.75%</td>
-                    <td>N/A</td>
-                    <td class="neutral">N/A</td>
-                    <td class="neutral">N/A</td>
-                    <td class="neutral">N/A</td>
+                    <td class="negative">-0.01%</td>
+                    <td>1.3881</td>
+                    <td class="negative">-0.07</td>
+                    <td class="negative">-19.43</td>
+                    <td class="negative">-2.02%</td>
                 </tr>
                 <tr class="fund-row" ondblclick="showFundDetail('020900', '天弘中证全指通信设备指数发起C', '2.2170')">
                     <td>020900</td>
@@ -1764,24 +1819,6 @@
                     <td class="positive">12.05</td>
                     <td class="positive">6.72</td>
                     <td class="positive">+0.61%</td>
-                </tr>
-                <tr class="fund-row" ondblclick="showFundDetail('018388', '华泰柏瑞港股通红利ETF联接基金C', '1.3881')">
-                    <td>018388</td>
-                    <td>华泰柏瑞港股通红利ETF联接基金C</td>
-                    <td><span class="category-tag category-港股金融">港股金融</span></td>
-                    <td>
-                        1.3601
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
-                    </td>
-                    <td>
-                        1.3600
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
-                    </td>
-                    <td class="negative">-0.01%</td>
-                    <td>1.3881</td>
-                    <td class="negative">-0.07</td>
-                    <td class="negative">-19.43</td>
-                    <td class="negative">-2.02%</td>
                 </tr>
                 <tr class="fund-row" ondblclick="showFundDetail('001864', '中海魅力长三角混合', '3.8640')">
                     <td>001864</td>
@@ -1909,23 +1946,23 @@
                     <td class="negative">-11.10</td>
                     <td class="negative">-1.27%</td>
                 </tr>
-                <tr class="fund-row" ondblclick="showFundDetail('015897', '天弘中证细分化工指数发起C', '0.7577')">
-                    <td>015897</td>
-                    <td>天弘中证细分化工指数发起C</td>
-                    <td><span class="category-tag category-化工">化工</span></td>
+                <tr class="fund-row" ondblclick="showFundDetail('016814', '国联中证煤炭指数C', '1.7300')">
+                    <td>016814</td>
+                    <td>国联中证煤炭指数C</td>
+                    <td><span class="category-tag category-传统能源">传统能源</span></td>
                     <td>
-                        0.7370
+                        1.7760
                         <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
                     </td>
                     <td>
-                        0.7481
+                        1.7740
                         <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
                     </td>
-                    <td class="positive">+1.51%</td>
-                    <td>0.7577</td>
-                    <td class="positive">12.83</td>
-                    <td class="negative">-11.10</td>
-                    <td class="negative">-1.27%</td>
+                    <td class="negative">-0.11%</td>
+                    <td>1.7300</td>
+                    <td class="negative">-0.46</td>
+                    <td class="positive">10.18</td>
+                    <td class="positive">+2.54%</td>
                 </tr>
                 <tr class="fund-row" ondblclick="showFundDetail('019919', '招商中证2000指数增强C', '1.6287')">
                     <td>019919</td>
@@ -1981,24 +2018,6 @@
                     <td class="positive">13.98</td>
                     <td class="positive">+1.69%</td>
                 </tr>
-                <tr class="fund-row" ondblclick="showFundDetail('016814', '国联中证煤炭指数C', '1.7300')">
-                    <td>016814</td>
-                    <td>国联中证煤炭指数C</td>
-                    <td><span class="category-tag category-传统能源">传统能源</span></td>
-                    <td>
-                        1.7760
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
-                    </td>
-                    <td>
-                        1.7740
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
-                    </td>
-                    <td class="negative">-0.11%</td>
-                    <td>1.7300</td>
-                    <td class="negative">-0.46</td>
-                    <td class="positive">10.18</td>
-                    <td class="positive">+2.54%</td>
-                </tr>
                 <tr class="fund-row" ondblclick="showFundDetail('017227', '富国中证全指家用电器ETF发起式联接C', '1.5007')">
                     <td>017227</td>
                     <td>富国中证全指家用电器ETF发起式联接C</td>
@@ -2019,8 +2038,8 @@
                 </tr>
                 <tr style="background-color: #f8f9fa; font-weight: bold;">
                     <td colspan="7" style="text-align: left;">汇总:</td>
-                    <td class="positive">238.90</td>
-                    <td class="positive">386.10</td>
+                    <td class="positive">226.07</td>
+                    <td class="positive">397.20</td>
                     <td>-</td>
                 </tr>
                     </tbody>
@@ -2046,6 +2065,42 @@
                     </thead>
                     <tbody>
                         
+                <tr class="fund-row" ondblclick="showFundDetail('021457', '易方达恒生红利低波ETF联接A', '1.2872')">
+                    <td>021457</td>
+                    <td>易方达恒生红利低波ETF联接A</td>
+                    <td><span class="category-tag category-港股金融">港股金融</span></td>
+                    <td>
+                        1.2560
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
+                    </td>
+                    <td>
+                        1.2555
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
+                    </td>
+                    <td class="negative">-0.04%</td>
+                    <td>1.2872</td>
+                    <td class="negative">-0.70</td>
+                    <td class="negative">-44.37</td>
+                    <td class="negative">-2.47%</td>
+                </tr>
+                <tr class="fund-row" ondblclick="showFundDetail('013416', '永赢中证全指医疗器械ETF发起联接C', '0.6791')">
+                    <td>013416</td>
+                    <td>永赢中证全指医疗器械ETF发起联接C</td>
+                    <td><span class="category-tag category-医疗器械">医疗器械</span></td>
+                    <td>
+                        0.6678
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
+                    </td>
+                    <td>
+                        0.6798
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
+                    </td>
+                    <td class="positive">+1.79%</td>
+                    <td>0.6791</td>
+                    <td class="positive">10.60</td>
+                    <td class="positive">0.62</td>
+                    <td class="positive">+0.10%</td>
+                </tr>
                 <tr class="fund-row" ondblclick="showFundDetail('024195', '永赢国证商用卫星通信产业ETF发起联接C', '1.1406')">
                     <td>024195</td>
                     <td>永赢国证商用卫星通信产业ETF发起联接C</td>
@@ -2081,24 +2136,6 @@
                     <td class="positive">19.17</td>
                     <td class="positive">39.51</td>
                     <td class="positive">+6.59%</td>
-                </tr>
-                <tr class="fund-row" ondblclick="showFundDetail('021457', '易方达恒生红利低波ETF联接A', '1.2872')">
-                    <td>021457</td>
-                    <td>易方达恒生红利低波ETF联接A</td>
-                    <td><span class="category-tag category-港股金融">港股金融</span></td>
-                    <td>
-                        1.2560
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
-                    </td>
-                    <td>
-                        1.2555
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
-                    </td>
-                    <td class="negative">-0.04%</td>
-                    <td>1.2872</td>
-                    <td class="negative">-0.70</td>
-                    <td class="negative">-44.37</td>
-                    <td class="negative">-2.47%</td>
                 </tr>
                 <tr class="fund-row" ondblclick="showFundDetail('015945', '易方达国防军工混合C', '1.3703')">
                     <td>015945</td>
@@ -2190,23 +2227,23 @@
                     <td class="positive">91.52</td>
                     <td class="positive">+11.44%</td>
                 </tr>
-                <tr class="fund-row" ondblclick="showFundDetail('015897', '天弘中证细分化工指数发起C', '0.6713')">
-                    <td>015897</td>
-                    <td>天弘中证细分化工指数发起C</td>
-                    <td><span class="category-tag category-化工">化工</span></td>
+                <tr class="fund-row" ondblclick="showFundDetail('013275', '富国中证煤炭指数(LOF)C', '1.8939')">
+                    <td>013275</td>
+                    <td>富国中证煤炭指数(LOF)C</td>
+                    <td><span class="category-tag category-传统能源">传统能源</span></td>
                     <td>
-                        0.7370
+                        1.9280
                         <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
                     </td>
                     <td>
-                        0.7481
+                        1.9259
                         <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
                     </td>
-                    <td class="positive">+1.51%</td>
-                    <td>0.6713</td>
-                    <td class="positive">13.23</td>
-                    <td class="positive">91.52</td>
-                    <td class="positive">+11.44%</td>
+                    <td class="negative">-0.11%</td>
+                    <td>1.8939</td>
+                    <td class="negative">-0.67</td>
+                    <td class="positive">10.14</td>
+                    <td class="positive">+1.69%</td>
                 </tr>
                 <tr class="fund-row" ondblclick="showFundDetail('002834', '华夏新锦绣混合C', '2.7145')">
                     <td>002834</td>
@@ -2298,46 +2335,10 @@
                     <td class="positive">7.84</td>
                     <td class="positive">+1.96%</td>
                 </tr>
-                <tr class="fund-row" ondblclick="showFundDetail('013275', '富国中证煤炭指数(LOF)C', '1.8939')">
-                    <td>013275</td>
-                    <td>富国中证煤炭指数(LOF)C</td>
-                    <td><span class="category-tag category-传统能源">传统能源</span></td>
-                    <td>
-                        1.9280
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
-                    </td>
-                    <td>
-                        1.9259
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
-                    </td>
-                    <td class="negative">-0.11%</td>
-                    <td>1.8939</td>
-                    <td class="negative">-0.67</td>
-                    <td class="positive">10.14</td>
-                    <td class="positive">+1.69%</td>
-                </tr>
-                <tr class="fund-row" ondblclick="showFundDetail('013416', '永赢中证全指医疗器械ETF发起联接C', '0.6791')">
-                    <td>013416</td>
-                    <td>永赢中证全指医疗器械ETF发起联接C</td>
-                    <td><span class="category-tag category-医疗器械">医疗器械</span></td>
-                    <td>
-                        0.6678
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
-                    </td>
-                    <td>
-                        0.6798
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">15:00</div>
-                    </td>
-                    <td class="positive">+1.79%</td>
-                    <td>0.6791</td>
-                    <td class="positive">10.60</td>
-                    <td class="positive">0.62</td>
-                    <td class="positive">+0.10%</td>
-                </tr>
                 <tr style="background-color: #f8f9fa; font-weight: bold;">
                     <td colspan="7" style="text-align: left;">汇总:</td>
-                    <td class="positive">108.11</td>
-                    <td class="positive">327.02</td>
+                    <td class="positive">94.88</td>
+                    <td class="positive">235.50</td>
                     <td>-</td>
                 </tr>
                     </tbody>
@@ -2378,14 +2379,14 @@
                     <td>摩根日本精选股票(QDII)A</td>
                     <td><span class="category-tag category-境外基金">境外基金</span></td>
                     <td>
+                        1.9395
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-24</div>
+                    </td>
+                    <td>
                         1.9403
                         <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
                     </td>
-                    <td>
-                        1.9386
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-22</div>
-                    </td>
-                    <td class="positive">+0.09%</td>
+                    <td class="negative">-0.04%</td>
                 </tr>
                 <tr class="fund-row" ondblclick="showFundDetail('012060', '富国全球消费精选混合(QDII)人民币A', 'N/A')">
                     <td>012060</td>
@@ -2434,14 +2435,14 @@
                     <td>广发纳斯达克100ETF联接人民币(QDII)A</td>
                     <td><span class="category-tag category-境外基金">境外基金</span></td>
                     <td>
+                        7.2322
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-23</div>
+                    </td>
+                    <td>
                         7.2889
                         <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-22</div>
                     </td>
-                    <td>
-                        7.2509
-                        <div style="font-size: 12px; color: #6c757d; margin-top: 2px;">09-19</div>
-                    </td>
-                    <td class="positive">+0.52%</td>
+                    <td class="negative">-0.78%</td>
                 </tr>
                     </tbody>
                 </table>
@@ -3067,7 +3068,7 @@
 
         // 显示图表
         function displayChart(data, fundCode, costPrice, titleLabel) {
-            console.log('开始绘制SVG图表:', data, fundCode, costPrice, titleLabel);
+            console.log('开始绘制Chart.js图表:', data, fundCode, costPrice, titleLabel);
             
             var chartContainer = document.getElementById('navChart');
             if (!chartContainer) {
@@ -3076,251 +3077,160 @@
             }
             
             // 清空容器
-            chartContainer.innerHTML = '';
-            // 创建 tooltip 容器
-            var tooltip = document.createElement('div');
-            tooltip.className = 'tooltip';
-            tooltip.style.display = 'none';
-            document.body.appendChild(tooltip);
+            chartContainer.innerHTML = '<canvas id="navChartCanvas"></canvas>';
             
-            // X轴标签稀疏显示：优先显示每月1日；若无，则显示每月15日；否则按间隔抽样
-            var labels = [];
-            var labelIndices = [];
-            for (var i = 0; i < data.length; i++) {
-                var d = new Date(data[i].date);
-                var day = d.getDate();
-                if (day === 1 || day === 15) {
-                    labels.push((d.getMonth()+1) + '/' + day);
-                    labelIndices.push(i);
-                }
-            }
-            if (labels.length < 4) {
-                // 兜底：按固定间隔取4个点
-                labels = [];
-                labelIndices = [];
-                var steps = 3;
-                for (var s = 0; s <= steps; s++) {
-                    var idx = Math.round(s * (data.length - 1) / steps);
-                    var dd = new Date(data[idx].date);
-                    labels.push((dd.getMonth()+1) + '/' + dd.getDate());
-                    labelIndices.push(idx);
-                }
-            }
-            var values = data.map(function(item) {
-                return parseFloat(item.nav);
-            });
+            // 提取标签和数值
+            var labels = data.map(function(item) { return item.date; });
+            var values = data.map(function(item) { return parseFloat(item.nav); });
             
-            console.log('图表标签:', labels);
             console.log('图表数值:', values);
+            
+            // 获取当前选中的日期（默认为最新日期）
+            var currentDate = labels[labels.length - 1];
+            var currentValue = values[values.length - 1];
+            
+            // 更新基金信息卡片
+            updateFundInfoCard(currentDate, currentValue, costPrice, data);
 
-            // 计算SVG尺寸
-            var width = chartContainer.clientWidth - 24;
-            var height = 400;
-            var paddingLeft = 54, paddingRight = 16, paddingTop = 32, paddingBottom = 46;
-            var chartWidth = width - paddingLeft - paddingRight;
-            var chartHeight = height - paddingTop - paddingBottom;
+            // 创建Chart.js图表
+            var ctx = document.getElementById('navChartCanvas').getContext('2d');
             
-            // 计算数据范围
-            var minValue = Math.min(...values);
-            var maxValue = Math.max(...values);
-            var valueRange = maxValue - minValue;
-            if (valueRange === 0) valueRange = 0.1;
+            // 销毁之前的图表
+            if (window.navChart) {
+                window.navChart.destroy();
+            }
             
-            // 如果有成本价，调整范围
-            if (costPrice && costPrice !== 'N/A') {
-                try {
-                    var costValue = parseFloat(costPrice);
-                    if (!isNaN(costValue)) {
-                        minValue = Math.min(minValue, costValue);
-                        maxValue = Math.max(maxValue, costValue);
-                        valueRange = maxValue - minValue;
-                        if (valueRange === 0) valueRange = 0.1;
+            window.navChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '净价',
+                        data: values,
+                        borderColor: '#1976d2',
+                        backgroundColor: 'rgba(25, 118, 210, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.1,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: '#1976d2',
+                        pointHoverBorderColor: '#fff',
+                        pointHoverBorderWidth: 2
+                    }, {
+                        label: '成本单价',
+                        data: costPrice && costPrice !== 'N/A' && costPrice !== '-' ? 
+                            new Array(values.length).fill(parseFloat(costPrice)) : [],
+                        borderColor: '#ff6b6b',
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        fill: false,
+                        pointRadius: 0,
+                        pointHoverRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            enabled: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: false
+                            },
+                            ticks: {
+                                maxTicksLimit: 6,
+                                callback: function(value, index, ticks) {
+                                    var label = this.getLabelForValue(value);
+                                    return label;
+                                }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            display: true,
+                            title: {
+                                display: false
+                            },
+                            ticks: {
+                                maxTicksLimit: 6,
+                                callback: function(value, index, ticks) {
+                                    return value.toFixed(3);
+                                }
+                            },
+                            grid: {
+                                color: '#e0e0e0',
+                                drawBorder: false
+                            }
+                        }
+                    },
+                    onHover: function(event, elements) {
+                        if (elements.length > 0) {
+                            var index = elements[0].index;
+                            var date = labels[index];
+                            var value = values[index];
+                            updateFundInfoCard(date, value, costPrice, data);
+                        }
+                    },
+                    onClick: function(event, elements) {
+                        if (elements.length > 0) {
+                            var index = elements[0].index;
+                            var date = labels[index];
+                            var value = values[index];
+                            updateFundInfoCard(date, value, costPrice, data);
+                        }
                     }
-                } catch (e) {
-                    console.log('成本价解析失败:', e);
                 }
-            }
-            
-            // 创建SVG元素
-            var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-            svg.setAttribute('width', width);
-            svg.setAttribute('height', height);
-            svg.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
-            
-            // 添加网格线（减少密度）
-            for (var i = 0; i <= 4; i++) {
-                var y = paddingTop + (i * chartHeight / 4);
-                var gridLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                gridLine.setAttribute('x1', paddingLeft);
-                gridLine.setAttribute('y1', y);
-                gridLine.setAttribute('x2', width - paddingRight);
-                gridLine.setAttribute('y2', y);
-                gridLine.setAttribute('stroke', '#e0e0e0');
-                gridLine.setAttribute('stroke-width', '1');
-                svg.appendChild(gridLine);
-            }
-            
-            // 添加Y轴标签（5-6档稀疏显示）
-            var yTicksCount = 5;
-            for (var i = 0; i <= yTicksCount; i++) {
-                var y = paddingTop + (i * chartHeight / yTicksCount);
-                var value = maxValue - (i * valueRange / yTicksCount);
-                var text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                text.setAttribute('x', paddingLeft - 10);
-                text.setAttribute('y', y + 4);
-                text.setAttribute('text-anchor', 'end');
-                text.setAttribute('font-size', '12');
-                text.setAttribute('fill', '#666');
-                text.textContent = value.toFixed(3);
-                svg.appendChild(text);
-            }
-            
-            // 绘制净值曲线
-            var points = [];
-            for (var i = 0; i < values.length; i++) {
-                var x = paddingLeft + (i * chartWidth / (values.length - 1));
-                var y = paddingTop + ((maxValue - values[i]) * chartHeight / valueRange);
-                points.push(x + ',' + y);
-            }
-            
-            // 生成平滑曲线路径（使用二次贝塞尔曲线）
-            function buildSmoothPath(pts) {
-                if (pts.length < 2) return '';
-                var d = 'M ' + pts[0];
-                for (var i = 0; i < pts.length - 1; i++) {
-                    var p = pts[i].split(',');
-                    var x1 = parseFloat(p[0]);
-                    var y1 = parseFloat(p[1]);
-                    var p2 = pts[i + 1].split(',');
-                    var x2 = parseFloat(p2[0]);
-                    var y2 = parseFloat(p2[1]);
-                    var mx = (x1 + x2) / 2;
-                    var my = (y1 + y2) / 2;
-                    d += ' Q ' + x1 + ' ' + y1 + ' ' + mx + ' ' + my;
-                }
-                // 直达最后一个点
-                d += ' L ' + pts[pts.length - 1];
-                return d;
-            }
-            var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            path.setAttribute('d', buildSmoothPath(points));
-            path.setAttribute('stroke', '#007bff');
-            path.setAttribute('stroke-width', '3');
-            path.setAttribute('fill', 'none');
-            path.setAttribute('stroke-linecap', 'round');
-            path.setAttribute('stroke-linejoin', 'round');
-            svg.appendChild(path);
-            
-            // 悬浮虚线与提示
-            var hoverLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-            hoverLine.setAttribute('x1', paddingLeft);
-            hoverLine.setAttribute('y1', paddingTop);
-            hoverLine.setAttribute('x2', paddingLeft);
-            hoverLine.setAttribute('y2', height - paddingBottom);
-            hoverLine.setAttribute('stroke', '#999');
-            hoverLine.setAttribute('stroke-width', '1.5');
-            hoverLine.setAttribute('stroke-dasharray', '5,5');
-            hoverLine.style.opacity = 0;
-            svg.appendChild(hoverLine);
-            
-            // 如果有成本价，添加水平虚线
-            if (costPrice && costPrice !== 'N/A') {
-                try {
-                    var costValue = parseFloat(costPrice);
-                    if (!isNaN(costValue)) {
-                        var costY = paddingTop + ((maxValue - costValue) * chartHeight / valueRange);
-                        var costLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                        costLine.setAttribute('x1', paddingLeft);
-                        costLine.setAttribute('y1', costY);
-                        costLine.setAttribute('x2', width - paddingRight);
-                        costLine.setAttribute('y2', costY);
-                        costLine.setAttribute('stroke', '#ff6b6b');
-                        costLine.setAttribute('stroke-width', '2');
-                        costLine.setAttribute('stroke-dasharray', '5,5');
-                        svg.appendChild(costLine);
-                        
-                        // 取消右侧成本价文字显示（仅保留虚线与悬浮提示）
-                    }
-                } catch (e) {
-                    console.log('成本价解析失败:', e);
-                }
-            }
-            
-            // 添加X轴标签（使用抽样后的索引定位）
-            for (var i = 0; i < labels.length; i++) {
-                var x = paddingLeft + (labelIndices[i] * chartWidth / (values.length - 1));
-                var text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                text.setAttribute('x', x);
-                text.setAttribute('y', height - paddingBottom + 20);
-                text.setAttribute('text-anchor', 'middle');
-                text.setAttribute('font-size', '12');
-                text.setAttribute('fill', '#666');
-                text.textContent = labels[i];
-                svg.appendChild(text);
-            }
-            
-            // 曲线下方填充淡蓝色区域
-            var areaPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            var areaD = 'M ' + points[0] + ' ';
-            var smooth = buildSmoothPath(points);
-            areaD += smooth.replace(/^M [^Q]+/, '');
-            areaD += ' L ' + points[points.length - 1].split(',')[0] + ',' + (height - paddingBottom) + ' L ' + points[0].split(',')[0] + ',' + (height - paddingBottom) + ' Z';
-            areaPath.setAttribute('d', areaD);
-            areaPath.setAttribute('fill', 'rgba(0,123,255,0.15)');
-            areaPath.setAttribute('stroke', 'none');
-            svg.insertBefore(areaPath, path);
-            
-            // 添加标题
-            var title = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-            title.setAttribute('x', width / 2);
-            title.setAttribute('y', paddingTop - 12);
-            title.setAttribute('text-anchor', 'middle');
-            title.setAttribute('font-size', '16');
-            title.setAttribute('font-weight', 'bold');
-            title.setAttribute('fill', '#333');
-            title.textContent = titleLabel || '净值走势';
-            svg.appendChild(title);
-
-            // 悬浮交互（提示字体更大，成本价与虚线一致颜色）
-            svg.addEventListener('mouseleave', function() {
-                hoverLine.style.opacity = 0;
-                tooltip.style.display = 'none';
-            });
-            svg.addEventListener('mousemove', function(evt) {
-                var rect = svg.getBoundingClientRect();
-                var x = evt.clientX - rect.left - 0; // 相对svg左上角
-                // 限定到绘图区域
-                var cx = Math.max(paddingLeft, Math.min(width - paddingRight, x));
-                var ratio = (cx - paddingLeft) / chartWidth;
-                // 使用线性插值计算 y 值
-                var fIndex = ratio * (values.length - 1);
-                var i0 = Math.floor(fIndex);
-                var i1 = Math.min(values.length - 1, i0 + 1);
-                var t = fIndex - i0;
-                var yVal = values[i0] * (1 - t) + values[i1] * t;
-                var xPos = cx;
-                hoverLine.setAttribute('x1', xPos);
-                hoverLine.setAttribute('x2', xPos);
-                hoverLine.style.opacity = 1;
-
-                // 取日期标签用最近点索引展示
-                var idx = Math.round(fIndex);
-                var tip = '日期: ' + data[idx].date + '<br/>单位净值: <b>' + yVal.toFixed(4) + '</b>';
-                if (costPrice && costPrice !== 'N/A') {
-                    tip += '<br/>成本单价: <span style="color:#ff6b6b;">' + parseFloat(costPrice).toFixed(4) + '</span>';
-                }
-                tooltip.innerHTML = tip;
-                tooltip.style.display = 'block';
-                tooltip.style.fontSize = '14px';
-                // 固定定位：基于视口坐标，垂直居中于绘图区上方，且不被遮挡
-                var svgRect = svg.getBoundingClientRect();
-                tooltip.style.left = (rect.left + xPos) + 'px';
-                tooltip.style.top = (svgRect.top + paddingTop + 50) + 'px';
             });
             
-            // 将SVG添加到容器
-            chartContainer.appendChild(svg);
-            console.log('SVG图表创建成功');
+            console.log('Chart.js图表创建成功');
+        }
+        
+        function updateFundInfoCard(date, value, costPrice, data) {
+            // 更新交易日期
+            document.getElementById('transactionDate').textContent = date;
+            
+            // 更新单位净值
+            document.getElementById('unitNav').textContent = value.toFixed(4);
+            
+            // 更新持仓成本
+            var costElement = document.getElementById('holdingCost');
+            if (costPrice && costPrice !== 'N/A' && costPrice !== '-') {
+                costElement.textContent = parseFloat(costPrice).toFixed(4);
+            } else {
+                costElement.textContent = '-';
+            }
+            
+            // 计算并更新涨跌幅
+            var changeRateElement = document.getElementById('changeRate');
+            var currentIndex = data.findIndex(function(item) { return item.date === date; });
+            
+            if (currentIndex > 0) {
+                var prevValue = parseFloat(data[currentIndex - 1].nav);
+                var changeRate = ((value - prevValue) / prevValue) * 100;
+                var changeText = (changeRate >= 0 ? '+' : '') + changeRate.toFixed(2) + '%';
+                
+                changeRateElement.textContent = changeText;
+                changeRateElement.className = 'info-value ' + (changeRate > 0 ? 'positive' : changeRate < 0 ? 'negative' : 'neutral');
+            } else {
+                changeRateElement.textContent = '-';
+                changeRateElement.className = 'info-value neutral';
+            }
         }
     </script>
 </body>
